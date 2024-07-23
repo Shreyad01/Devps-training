@@ -6,8 +6,8 @@
 # Define variables and configurations
 LOG_FILE="sysmonitor.log"
 REPORT_FILE="report.txt"
-ALERT_THRESHOLD_CPU=80  # Example: percentage
-ALERT_THRESHOLD_MEMORY=90  # Example: percentage
+ALERT_THRESHOLD_CPU=100  
+ALERT_THRESHOLD_MEMORY=90 
 #EMAIL_RECIPIENT="shreya.daphal@einfochips.com"
 
 # Function to check command availability
@@ -145,6 +145,14 @@ run_non_interactive_mode() {
     echo "Running in Non-Interactive Mode"
     generate_system_report >> "$LOG_FILE" 2>&1
 }
+
+# Determine script mode: interactive or non-interactive
+if [ -t 0 ]; then
+    run_interactive_mode
+else
+    run_non_interactive_mode
+fi
+
 
 # End of Script
 # ==============
