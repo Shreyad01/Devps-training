@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+  name: rewrite
+  namespace: default
+spec:
+  ingressClassName: niginx
+  tls:
+    - hosts:
+      - webapp.local
+      secretName: tls-secret
+  rules:
+  - host: webapp.local
+    http:
+      paths:
+      - path: /frontend
+        pathType: Prefix
+        backend:
+          service:
+            name: frontendservice
+            port:
+              number: 80
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: backendservice
+            port:
+              number: 80
+
+
+
+
+
