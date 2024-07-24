@@ -47,7 +47,7 @@
    + Verify connectivity to external services or databases.
     <br>
     
-    ![alt text](image/image-6.png)
+ ![alt text](image/image-6.png)
 
 #### 5. Alerting Mechanism:
    
