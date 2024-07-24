@@ -1,0 +1,32 @@
+Report generated at Tuesday 23 July 2024 02:51:29 PM IST
+### CPU Usage ###
+CPU Usage : 20.2%
+### Memory Usage ###
+Memory Usage : 10286/15802MB (65.09%)
+### Disk Usage ###
+Disk Usage : 73/461GB (17%)
+### Network Statistics ###
+Network Connectivity Check:
+Ping successful
+### Top Processes ###
+    PID    PPID CMD                         %MEM %CPU
+  71921   38261 /usr/lib/virtualbox/VBoxHea  0.6 29.7
+ 597526  597461 /usr/share/code/code --type  2.2  4.1
+ 610258  610027 /snap/teams-for-linux/649/t  2.6  2.9
+   4935    4767 /usr/bin/gnome-shell         1.7  2.6
+  20903   20520 /opt/google/chrome/chrome -  4.9  2.2
+ 597487  597458 /usr/share/code/code --type  0.8  2.0
+  20547   20517 /opt/google/chrome/chrome -  0.8  1.6
+ 617929   20520 /opt/google/chrome/chrome -  1.1  1.6
+ 619954   20520 /opt/google/chrome/chrome -  0.7  1.5
+### System Logs Analysis ###
+Recent Critical Events:
+No critical events found.
+### Service Status ###
+Apache service is not running.
+     Active: active (running) since Sun 2024-07-21 11:06:36 IST; 2 days ago
+### External Services Connectivity ###
+External Service (Google) Connectivity Check:
+Ping successful
+### Alerting System ###
+### End of Report ###
