@@ -1,59 +1,29 @@
 pipeline {
     agent any
-
-    environment {
-        MAVEN_HOME = tool 'Maven-3.9.0' // Ensure this matches your Maven tool name
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout code from GitHub repository
-                git url: 'https://github.com/Shreyad01/jenkinsPractice', branch: 'master', credentialsId: '727edad4-c383-4574-a868-9570224b1bc0'
-            }
-        }
-
         stage('Build') {
             steps {
-                // Build the project using Maven
-                script {
-                    withEnv(["PATH+MAVEN=${MAVEN_HOME}\\bin"]) {
-                        sh "echo $PATH"
-                        sh 'mvn clean install'
-                    }
-                }
+                echo 'Building the Java application...'
+                sh 'mvn clean install'
+                sh "${env.MAVEN_HOME}/bin/mvn clean install"
+
             }
         }
-
         stage('Test') {
-            // Run tests using Maven
-           steps {
-                script {
-                   withEnv(["PATH+MAVEN=${MAVEN_HOME}\\bin"]) {
-                        sh 'mvn test'
-                    }
-                }
-               }   
-        }
-
-
-        stage('Archive Artifacts') {
             steps {
-                // Archive the built artifacts
-                archiveArtifacts artifacts: 'target/*.war', allowEmptyArchive: true
+                echo 'Running tests...'
+                sh "${env.MAVEN_HOME}/bin/mvn clean install"
+
             }
         }
     }
-
     post {
-        always {
-            echo 'Pipeline finished.'
-        }
         success {
-            echo 'Pipeline succeeded.'
+            echo 'Build and test succeeded!'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo 'Build or test failed!'
         }
     }
 }
+

@@ -1,66 +1,145 @@
-## create a Jenkins declarative pipeline for building a simple Maven project hosted on GitHub. Automate the build process, ensure code quality, and facilitate continuous delivery (CD).
+## Multi-Branch Project
 
-#### 1. Setup Jenkins Job
++ on GitHub make repository with name ` my-java-app`
++ create  `my-java-app` folder on local machine . 
++ create the git repository in the my-java-app for enabling the version-control. Use following command to set do the initial commit 
 
-+ 1) go to  `jenkins website `
-+ 2) create `new item` name it `pipeline-script` using `pipeline`
-+ 3) in General write `Description`
+```
+    git init
+    git status
+```
++ create `pom.xml` file 
 <br>
 
-![alt text](Images/image.png)
+![alt text](images/image.png)
 
-+ 4) go to `Advance Project Option` select Pipeline Defination as `Pipeline script from SCM`
-+ 5) In `SCM` select `Git`
-+ 6) write `Repository URL`
-+ 7) In credential  click on `add` select `jenkins` 
-+ 8) In `Domain` select `Global credential ` in `kind` select `Username with password` in `scope` select `Global` , in Username put `GitHub username` in password `use GitHUb token` then click on add
++ After creating file on local machine push the code on remote repo.use following commands
 
+```
+
+  git remote add origin 
+  git push -u origin main
+
+```
+
++ make following directories `src/main/java/com/example`
 <br>
 
-![alt text](Images/image-1.png)
+![alt text](images/image-1.png)
 
-+ 9) in credential select your correct Credential
-+ 10) In `Branch Specifier` write `branch name`
-
++ Go to `example ` directory and make `App.java` file
 <br>
 
-![alt text](Images/image-2.png)
-+ in script path default it show `Jenkinsfile`
-+ now apply and save 
+![alt text](images/image-2.png)
 
+ ```
+ git add
+ git commit -m "Added project file"
+ git status
+
+ ```
 <br>
 
-![alt text](Images/image-3.png)
+![alt text](images/image-3.png)
 
-#### 2. Create Jenkinsfile
-
-+ Write a declarative pipeline script in **Jenkinsfile** that includes the following stages:
-   + 1) Clone Repository: Clone the Maven project from the GitHub repository.
-    <br>
-    
-   ![alt text](Images/image-4.png)
-   + 2) **Build**: Execute the Maven build process (mvn clean install).
-    <br>
-
-     ![alt text](Images/image-8.png)
-
-   + 3) **Test**: Run unit tests as part of the Maven build.
-    <br>
-
-![alt text](Images/image-6.png)
-
-   + 4) **Archive Artifacts**: Archive the build artifacts for future use.
-   <br>
-
-   ![alt text](Images/image-7.png)
- + First commit and push the **Jenkinsfile** we created  in the project repo and it must in the root directory of the project
- + ` git add `
- +  `git commit -m "adding Jenkinsfile"`
- +  `git push origin master`
- + Now got to jenkins and go to project `pipeline-script` and click on  **build now**
-+ Go to Manage Jenkins select Plugins and installed `pipeline stage view` plugin for stage view
-+ After complition of build the dashboard will look like following :
++ push this changes on GitHub repository using command `git push -u origin main `
 
 <br>
 
-![alt text](Images/image-9.png)
+![alt text](images/image-4.png)
+
+### Multiple branches : 
+
++ create branches with name `development` , ` staging`, `production` using command  
+```
+       git branch develpoment
+       git branch staging
+       git branch production
+
+``` 
+
+<br>
+
+![alt text](images/image-5.png)
+
++ on each branch  do changes in  `App.java` file
+
+<br>
+
+![alt text](images/image-7.png)
+
+<br>
+
+![alt text](images/image-8.png)
+
++ add and commit those changes 
+
+<br>
+
+![alt text](images/image-9.png)
+
++ push those changes on GitHub repository
+
+<br>
+
+![alt text](images/image-10.png)
+
++ add  `Jenkinsfile` in each branch
+
+<br>
+
+![alt text](images/image-11.png)
+
++ add ,commit changes 
+
+<br>
+
+![alt text](images/image-12.png)
+
++ push changes on GitHub repository
+
+<br>
+
+![alt text](images/image-13.png)
+
++ Do same process for `main`, `staging` and `production ` branch.
+
+### Create a Multi-Branch Pipeline Job on Jenkins
+
++ Go to Jenkins Dashboard .Select  **New Item** 
++ Enter name of job `Multibranch` 
++ Select `Multi-branch Pipeline` and click OK.
++ Add a Branch source as  Git.
++ Configure the repository URL
+
+<br>
+
+![alt text](images/image-14.png)
+
++ Go to ` Manage jenkins ` select  `system`then  go to `Global properties` in that pune name as `MAVEN_HOME` globally and write Maven path . You can check maven path by using command `mvn --version`
+
+<br>
+
+![alt text](images/image-15.png)
+
+<br>
+
+![alt text](images/image-16.png)
+
++ After saving jenkins will start building the code by checking the github repo and searches for all the other branches on the repo.
+
+<br>
+
+![alt text](images/image-17.png)
+
++ After scanning every branch , it will run every branch as an individual jenkins project as it find the jenkins file in each branch
+
+<br>
+
+![alt text](images/image-18.png)
+
++ On each branch we can check **stage view** 
+
+<br>
+
+![alt text](images/image-19.png)

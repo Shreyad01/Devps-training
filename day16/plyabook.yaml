@@ -1,0 +1,88 @@
+-  hosts: all
+   become: yes
+   tasks:
+     - name: Update apt cache
+       apt:
+         update_cache: yes
+ 
+     - name: Install Apache2
+       apt:
+         name: apache2
+         state: present
+
+- name: Configure Apache2 service
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure Apache2 is running and enabled on boot
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+ 
+    - name: Set custom configuration for Apache2
+      copy:
+        dest: /etc/apache2/sites-available/000-default.conf
+        content: |
+          <VirtualHost *:80>
+              ServerAdmin webmaster@localhost
+              DocumentRoot /var/www/html
+              ErrorLog ${APACHE_LOG_DIR}/error.log
+              CustomLog ${APACHE_LOG_DIR}/access.log combined
+              # Custom configuration here
+              LogLevel info
+          </VirtualHost>
+ 
+    - name: Reload Apache2 to apply changes
+      service:
+        name: apache2
+        state: reloaded
+
+- name: Manage files on managed nodes
+  hosts: all
+  become: yes
+  tasks:
+ 
+    - name: Ensure a file is present
+      ansible.builtin.file:
+        path: ~/file.txt
+        state: touch
+ 
+    - name: Create a file with specific content
+      ansible.builtin.copy:
+        dest: ~/file_with_content.txt
+        content: "This is the content of the file.\n"
+ 
+    - name: Delete a file
+      ansible.builtin.file:
+        path: ~/abc.txt
+        state: absent
+ 
+    - name: Modify a file by appending a line
+      ansible.builtin.lineinfile:
+        path: ~/file_with_content.txt
+        line: "New line to be added to the file."
+ 
+    - name: Ensure a directory is present
+      ansible.builtin.file:
+        path: ~/.ssh
+        state: directory
+ 
+    - name: Delete a directory
+      ansible.builtin.file:
+        path: ~/abc
+        state: absent
+ 
+    - name: Set permissions on a file
+      ansible.builtin.file:
+        path: ~/file.txt
+        mode: '0644'
+ 
+    - name: Set ownership on a file
+      ansible.builtin.file:
+        path: ~/file.txt
+        owner: ubuntu
+        group: admin
+
+
+

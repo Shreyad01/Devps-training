@@ -1,145 +1,168 @@
-## Multi-Branch Project
+## Problem Statement:
+You are tasked with setting up a CI/CD pipeline using Jenkins to streamline the deployment process of a simple Java application. The pipeline should accomplish the following tasks:
 
-+ on GitHub make repository with name ` my-java-app`
-+ create  `my-java-app` folder on local machine . 
-+ create the git repository in the my-java-app for enabling the version-control. Use following command to set do the initial commit 
++ 1. Fetch the Dockerfile: The pipeline should clone a GitHub repository containing the source code of the Java application and a Dockerfile.
++ 2. Create a Docker Image: The pipeline should build a Docker image from the fetched Dockerfile.
++ 3. Push the Docker Image: The pipeline should push the created Docker image to a specified DockerHub repository.
++ 4. Deploy the Container: The pipeline should deploy a container using the pushed Docker image.
+
+### 1. GitHub Repository:
++ Create on folder with the project name ` Docker-java-app` and create one `Sample.java, Dockerfile & Jenkinsfile` file use
 
 ```
-    git init
-    git status
+mkdir Docker-java-app
+cd Docker-java-app
+touch Sample.java Dockerfile Jenkinsfile
 ```
-+ create `pom.xml` file 
+
 <br>
 
 ![alt text](images/image.png)
 
-+ After creating file on local machine push the code on remote repo.use following commands
++ clone the github repo in your folder and move all files in that repo
+ 
+ <br>
 
-```
+ ![alt text](images/image-1.png)
 
-  git remote add origin 
-  git push -u origin main
++ now do `git add`, `git commit`
 
-```
-
-+ make following directories `src/main/java/com/example`
-<br>
-
-![alt text](images/image-1.png)
-
-+ Go to `example ` directory and make `App.java` file
 <br>
 
 ![alt text](images/image-2.png)
 
- ```
- git add
- git commit -m "Added project file"
- git status
++ Open the Sample.java file and paste the below code which just prints the value from 1 to 10
 
- ```
-<br>
+```
+public class Sample {
+    public static void main(String[] args) {
 
-![alt text](images/image-3.png)
+        for(int i=1; i<=10;i++){
 
-+ push this changes on GitHub repository using command `git push -u origin main `
+            System.out.println(i);
+        }
+
+    }
+}
+```
 
 <br>
 
 ![alt text](images/image-4.png)
 
-### Multiple branches : 
+### 2. Create Dockerfile and Jenkinsfile:
 
-+ create branches with name `development` , ` staging`, `production` using command  
+ + Open the Dockerfile and write code simply used to build the image. following code uses openjdk image as a base image then copy the Sample.java file at the `/usr/src/myapp` then goes to the working directory and compile and runs the Sample.java file
+
 ```
-       git branch develpoment
-       git branch staging
-       git branch production
+FROM openjdk:11
+WORKDIR /usr/src/myapp
+COPY Sample.java /usr/src/myapp
+RUN javac Sample.java
+CMD ["java", "Sample"]
 
-``` 
+```
 
+ <br>
+
+ ![alt text](images/image-3.png)
+
+ + Now open the Jenkinsfile and paste the below code
+
+ ```
+ pipeline {
+    agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('0eb1e76a-abaa-4e80-b1c1-72101f9c9f77')
+        REPO_NAME = 'shreyad01/docker-java-app'
+    }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/Shreyad01/docker-java.git'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${env.REPO_NAME}")
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('DOCKERHUB_CREDENTIALS') {
+                        // dockerImage.push("${env.BUILD_NUMBER}")
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+        stage('Deploy Container') {
+            steps {
+                script {
+                    sh """
+                    docker run -d --name java-container \
+                    ${env.REPO_NAME}:latest
+                    """
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build and test succeeded!'
+        }
+        failure {
+            echo 'Build or test failed!'
+        }
+    }
+}
+```
 <br>
 
 ![alt text](images/image-5.png)
 
-+ on each branch  do changes in  `App.java` file
++ Now push the Changes to the Github repo after commiting the changes locally
+```
+git add .
+git commit -m "changes done in files"
+git push origin master
+```
+<br>
+
+![alt text](images/image-6.png)
 
 <br>
 
 ![alt text](images/image-7.png)
 
+### 3. Create Jenkins Project:
+
++ Install Docker Pipeline Plugin
++ Add DockerHub Credentials in Jenkins Credentials
++ Go to Jenkins dashboard and click on "New Item"
++ Create new pipeline job and give the name Java-Pipeline and then click on OK
 <br>
 
 ![alt text](images/image-8.png)
 
-+ add and commit those changes 
++ Now in configuration provide the github repo under the Pipeline Section and choose SCM as git while configuring the Java-Pipeline job and provide the credentials if repo is private then click on SAVE 
 
 <br>
 
 ![alt text](images/image-9.png)
 
-+ push those changes on GitHub repository
++ After configuring the Java-Pipeline job click on Build Now to run the build
+
++ In the console Output we will be able to see the logs
 
 <br>
 
-![alt text](images/image-10.png)
 
-+ add  `Jenkinsfile` in each branch
 
-<br>
-
-![alt text](images/image-11.png)
-
-+ add ,commit changes 
++ After successfully building the Job the dashboard will look like this
 
 <br>
 
-![alt text](images/image-12.png)
-
-+ push changes on GitHub repository
-
-<br>
-
-![alt text](images/image-13.png)
-
-+ Do same process for `main`, `staging` and `production ` branch.
-
-### Create a Multi-Branch Pipeline Job on Jenkins
-
-+ Go to Jenkins Dashboard .Select  **New Item** 
-+ Enter name of job `Multibranch` 
-+ Select `Multi-branch Pipeline` and click OK.
-+ Add a Branch source as  Git.
-+ Configure the repository URL
-
-<br>
-
-![alt text](images/image-14.png)
-
-+ Go to ` Manage jenkins ` select  `system`then  go to `Global properties` in that pune name as `MAVEN_HOME` globally and write Maven path . You can check maven path by using command `mvn --version`
-
-<br>
-
-![alt text](images/image-15.png)
-
-<br>
-
-![alt text](images/image-16.png)
-
-+ After saving jenkins will start building the code by checking the github repo and searches for all the other branches on the repo.
-
-<br>
-
-![alt text](images/image-17.png)
-
-+ After scanning every branch , it will run every branch as an individual jenkins project as it find the jenkins file in each branch
-
-<br>
-
-![alt text](images/image-18.png)
-
-+ On each branch we can check **stage view** 
-
-<br>
-
-![alt text](images/image-19.png)
