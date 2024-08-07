@@ -1,0 +1,5 @@
+---
+# handlers file for roles/backend
+- name: Restart Node.js application
+  command: pm2 restart all
+  become: true

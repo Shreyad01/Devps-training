@@ -1,0 +1,4 @@
+db_host: localhost             # database host name
+db_user: user              # database user name
+db_password: password      # user password
+db_name: tesDB                    # database name

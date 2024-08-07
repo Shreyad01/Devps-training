@@ -1,0 +1,5 @@
+
+server_name: 13.57.183.235  # ip address of the ec2 instance
+root_dir: /usr/share/nginx/html
+backend_host: 127.0.0.1  # ip address of backend host
+backend_port: 3000  # port on which backend is listening
