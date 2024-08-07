@@ -1,0 +1,47 @@
+---
+- name: Install MySQL
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: yes
+  loop:
+    - mysql-server
+    - mysql-client
+    - python3-mysqldb
+    - libmysqlclient-dev
+
+- name: Start and enable MySQL service
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Adding mysql config file
+  template:
+    src: .my.cnf.j2
+    dest: /root/.my.cnf
+  become: yes
+
+- name: Ensure MySQL root password is set
+  mysql_user:
+    name: root
+    host: localhost
+    password: '{{ db_root_password }}'
+    check_implicit_admin: yes
+  become: yes
+
+- name: Create application database and user
+  mysql_db:
+    name: '{{ db_name }}'
+    state: present
+  become: yes
+
+- name: Create application user
+  mysql_user:
+    name: '{{ db_user }}'
+    password: '{{ db_password }}'
+    priv: '{{ db_name }}.*:ALL'
+    state: present
+  become: yes

@@ -1,0 +1,6 @@
+---
+# defaults file for roles/backend
+nodejs_version: "16.x"
+nodejs_install_method: "apt" # or "nvm" if you prefer using Node Version Manager
+app_directory: "/opt/nodejs_app"
+app_start_command: "npm start"

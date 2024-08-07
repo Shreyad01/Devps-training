@@ -1,0 +1,28 @@
+galaxy_info:
+  author: mysql-database
+  description: Ansible role to install and configure MySQL server , create databases and users.
+  license: MIT
+  min_ansible_version: 2.9
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version.
+  # min_ansible_container_version:
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+  # - name: SomePlatform
+  #   versions:
+  #   - all
+  #   - 1.0
+  #   - 7
+  #   - 99.99
+
+  galaxy_tags: 
+    - database
+    - mysql
+
+dependencies: []
+  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
+  # if you add dependencies to this list.
