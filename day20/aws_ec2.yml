@@ -1,0 +1,12 @@
+plugin: aws_ec2
+regions:
+  - ap-south-1
+filters:
+  instance-state-name:
+    - running
+  tag:Name:
+    - Shreya
+hostnames:
+  - ip-address
+compose:
+  ansible_host: ip_address

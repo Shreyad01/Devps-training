@@ -1,0 +1,50 @@
+---
+- name: Optimize Deployment
+  hosts: all
+  gather_facts: yes
+  become: yes
+  remote_user: ubuntu
+  roles:
+    - docker
+    - docker-dependencies
+
+  tasks:
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+      async: 300
+      poll: 0
+      register: async_results
+
+    - name: Wait for nginx to be installed
+      async_status:
+        jid: "{{ async_results.ansible_job_id }}"
+      register: results_status
+      until: results_status.finished
+      retries: 30
+      delay: 10
+      # with_items:
+      #   - "{{ ansible_job_id }}"
+      # when: async_results.ansible_job_id is defined
+
+    - name: Copy configuration file
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      # notify: restart nginx
+
+    - name: Ensure nginx container is running
+      docker_container:
+        name: my-nginx
+        image: nginx:latest
+        state: started
+        ports:
+          - "8080:80"
+
+  # handlers:
+  #   - name: restart nginx
+  #     service:
+  #       name: nginx
+  #       state: restarted
+  #     become: yes
