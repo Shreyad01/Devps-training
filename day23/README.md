@@ -74,7 +74,7 @@ You have a scenario where a development team needs access to an S3 bucket contai
 
 ![alt text](images/image-4.png)
 
-+ In Name,reeview and create tab givr role name as `DevTeamRole` . Review permissions and
++ In Name,reeview and create tab givr role name as `DevTeamRole` . Review permissions.
 
 <br>
 
