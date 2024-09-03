@@ -1,0 +1,72 @@
+pipeline {
+    environment {
+         DOCKER_REGISTRY = 'shreyad01'
+        DOCKER_IMAGE_NAME = 'final-task'
+        DOCKER_CREDENTIALS = 'dockerHub-Id'
+        KUBERNETES_NAMESPACE = 'default'
+        //ansible_server_private_ip="localhost"
+        //KUBECONFIG_CREDENTIALS_ID = 'minikube-config' // Update with your Kubeconfig credentials ID
+        MY_KUBECONFIG = credentials('minikube-config')
+    }
+
+    agent any
+ 
+    stages {
+        stage('Cloning Git') {
+            steps {
+                git([url:'https://github.com/Shreyad01/Photofolio-website.git', branch: 'master'])
+            }
+        }
+        stage('Building image') {
+            steps {
+                script {
+                     dir('frontend') {
+                        dockerImage = docker.build "${imagename}:${containerName}"
+                     }
+                }
+            }
+        }
+ 
+        stage('Running image') {
+            steps {
+                script {
+                    sh "docker run -dit --name ${containerName} ${imagename}:${containerName} /bin/bash"
+                    // Perform any additional steps needed while the container is running
+                }
+            }
+        }
+ 
+        stage('Stop and Remove Container') {
+            steps {
+                script {
+                    sh "docker stop ${containerName} || true"
+                    sh "docker rm ${containerName} || true"
+                }
+            }
+        }
+ 
+        stage('Deploy Image') {
+            steps {
+                script {
+                    // Use Jenkins credentials for Docker Hub login
+                    withCredentials([usernamePassword(credentialsId: dockerHubCredentials, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+ 
+                        // Push the image
+                        sh "docker push ${imagename}:${containerName}"
+                    }
+                }
+            }
+        }
+        stage('Cleaning up') { 
+            steps { 
+                sh "docker rmi ${imagename}:${containerName}" 
+            }
+        }
+        stage('Test Kubernetes connectivity') {
+            steps {
+                sh("kubectl get pods -n production --kubeconfig $MY_KUBECONFIG")
+            }
+        }
+    }
+}

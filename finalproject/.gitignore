@@ -1,0 +1,5 @@
+*.tfstate
+*.tfstate.*
+.terraform/
+finaltask-shreya.pem
+*/finaltask-shreya.pem

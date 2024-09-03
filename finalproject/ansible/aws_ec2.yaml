@@ -1,0 +1,20 @@
+plugin: aws_ec2
+regions:
+  - ap-northeast-2
+filters:
+  instance-state-name:
+    - running
+  tag:Name:
+    - Controller-Node-shreya
+    - Worker-Node-shreya
+  tag:Node: 
+    - Worker
+    - Master
+hostnames:
+  - ip-address
+compose:
+  instance_id: instance_id
+  ec2_region: placement.region
+groups:
+  master_nodes: "'Master' in tags['Node']"
+  worker_nodes: "'Worker' in tags['Node']"
